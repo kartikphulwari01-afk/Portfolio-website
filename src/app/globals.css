@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --background: #02050A;
+  --foreground: #EAF0F7;
+  --color-cyber-dark: #050812;
+  --color-cyber-cyan: #00E5FF;
+  --color-haki-green: #39FF14;
+  --color-cyber-purple: #8B5CF6;
+  --color-cyber-gold: #FFC857;
+  --color-cyber-red: #FF2A2A;
+  --color-muted: #8892B0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cyber-dark: var(--color-cyber-dark);
+  --color-cyber-cyan: var(--color-cyber-cyan);
+  --color-haki-green: var(--color-haki-green);
+  --color-cyber-purple: var(--color-cyber-purple);
+  --color-cyber-gold: var(--color-cyber-gold);
+  --color-cyber-red: var(--color-cyber-red);
+  --color-muted: var(--color-muted);
+  
+  --font-sans: var(--font-inter), sans-serif;
+  --font-heading: var(--font-space-grotesk), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .panel-cyber {
+    @apply bg-[#050812]/80 backdrop-blur-md border border-white/10 relative overflow-hidden;
+  }
+  
+  .panel-corners::before,
+  .panel-corners::after {
+    content: '';
+    @apply absolute w-2 h-2 border-white/20 pointer-events-none;
+  }
+  .panel-corners::before {
+    @apply top-0 left-0 border-t border-l;
+  }
+  .panel-corners::after {
+    @apply bottom-0 right-0 border-b border-r;
+  }
+
+  .text-glow-cyan { text-shadow: 0 0 15px rgba(0, 229, 255, 0.6); }
+  .text-glow-haki { text-shadow: 0 0 15px rgba(57, 255, 20, 0.6); }
+  .text-glow-gold { text-shadow: 0 0 15px rgba(255, 200, 87, 0.6); }
+  .box-glow-cyan { box-shadow: 0 0 20px rgba(0, 229, 255, 0.15); }
+  .box-glow-haki { box-shadow: 0 0 20px rgba(57, 255, 20, 0.15); }
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  .animate-scanline {
+    animation: scanline 8s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
