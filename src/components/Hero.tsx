@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
@@ -27,7 +27,7 @@ export function Hero() {
     // We extend the pin to 400vh. The video finishes playing at 300vh (75%), 
     // leaving a 100vh "HOLD" at the end where the final sunset frame is safely frozen.
     ScrollTrigger.create({
-      trigger: containerRef.current,
+      trigger: wrapperRef.current,
       start: "top top",
       end: "+=400%", 
       pin: true,
@@ -36,7 +36,7 @@ export function Hero() {
       onUpdate: (self) => {
         if (videoRef.current && !isNaN(videoRef.current.duration) && videoRef.current.duration > 0) {
           // Video finishes at exactly 75% of this 400vh pin (i.e. at 300vh)
-          const videoProgress = Math.min(1, self.progress / 0.75);
+          const videoProgress = Math.min(1, self.progress);
           
           // Epsilon (0.05s) prevents browser black-frame bugs at exact duration
           const safeDuration = Math.max(0, videoRef.current.duration - 0.05);
@@ -55,7 +55,7 @@ export function Hero() {
       scale: 0.9,
       ease: "none",
       scrollTrigger: {
-        trigger: containerRef.current,
+        trigger: wrapperRef.current,
         start: "top top",
         end: "+=200%",
         scrub: true
@@ -72,17 +72,17 @@ export function Hero() {
         <video
           ref={videoRef}
           src="/hero-video.mp4"
-          className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           muted
           playsInline
           preload="auto"
         />
 
         {/* Deep overlay to ensure text remains readable */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#02050A]/50 to-[#02050A] z-0 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(2,5,10,0.4)_0%,transparent_50%)] z-0 pointer-events-none" />
         
         {/* Central Composition */}
-        <div ref={textGroupRef} className="relative z-10 w-full flex flex-col items-center text-center">
+        <div ref={textGroupRef} className="relative z-10 w-full flex flex-col items-center text-center pb-20">
           
           <div className="hero-element font-mono text-[10px] md:text-xs text-cyber-gold tracking-[0.4em] mb-8 uppercase flex items-center gap-4 opacity-90 border border-cyber-gold/20 px-4 py-1 bg-cyber-gold/5 backdrop-blur-sm">
             <Compass size={12} className="animate-[spin_4s_linear_infinite]" />
@@ -97,13 +97,13 @@ export function Hero() {
             ? Cybersecurity <span className="text-foreground px-2">//</span> Fullstack Engineering
           </div>
 
-          <a href="/resume.pdf" target="_blank" rel="noreferrer" className="hero-element mt-12 px-8 py-4 border border-white/20 font-mono text-xs tracking-widest uppercase text-foreground hover:text-cyber-cyan hover:border-cyber-cyan hover:bg-cyber-cyan/10 transition-all backdrop-blur-md">
+          <a href="/resume.pdf" target="_blank" rel="noreferrer" className="hero-element mt-6 px-8 py-4 border border-white/20 font-mono text-xs tracking-widest uppercase text-foreground hover:text-cyber-cyan hover:border-cyber-cyan hover:bg-cyber-cyan/10 transition-all backdrop-blur-md">
             DOWNLOAD RESUME
           </a>
         </div>
 
         {/* Scroll Cue */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-50 transition-opacity hover:opacity-100 z-20">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 transition-opacity hover:opacity-100 z-20">
           <span className="font-mono text-[10px] tracking-widest uppercase text-cyber-gold">Scroll to scrub video</span>
           <div className="w-4 h-6 border border-cyber-gold/50 rounded-full flex justify-center p-1">
             <div className="w-1 h-1 bg-cyber-gold rounded-full animate-bounce" />
@@ -114,6 +114,15 @@ export function Hero() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
 
 

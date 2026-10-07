@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
@@ -69,8 +69,37 @@ const PROJECTS = [
 export function Missions() {
   const sectionRef = useRef<HTMLElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
+  
+  const cinematicRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const targetTimeRef = useRef<number>(0);
+  const rafPendingRef = useRef<boolean>(false);
+
+  const updateVideo = (progress: number) => {
+    if (!videoRef.current || isNaN(videoRef.current.duration) || videoRef.current.duration <= 0) return;
+    targetTimeRef.current = progress * Math.max(0, videoRef.current.duration - 0.05);
+    if (!rafPendingRef.current) {
+      rafPendingRef.current = true;
+      requestAnimationFrame(() => {
+        if (videoRef.current) videoRef.current.currentTime = targetTimeRef.current;
+        rafPendingRef.current = false;
+      });
+    }
+  };
 
   useGSAP(() => {
+    if (sectionRef.current) {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          onUpdate: (self) => updateVideo(self.progress)
+        }
+      });
+    }
+
     // Animate central line drawing down
     if (lineRef.current) {
       gsap.to(lineRef.current, {
@@ -106,12 +135,26 @@ export function Missions() {
   }, { scope: sectionRef });
 
   return (
-    <section id="missions" ref={sectionRef} className="relative w-full pb-32 pt-16 lg:-mt-32 border-t border-white/5 bg-[#02050A] z-10 overflow-hidden">
+    <section id="missions" ref={sectionRef} className="relative w-full border-t border-white/5 bg-[#02050A]">
       
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#00E5FF]/5 to-transparent pointer-events-none" />
+      {/* Sticky Cinematic Background for Scene 3 */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <div className="sticky top-0 w-full h-screen overflow-hidden">
+          <video 
+            ref={videoRef} 
+            src="/scene3-scroll-scrub-web.mp4" 
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+            muted playsInline preload="auto" 
+          />
+          {/* Subtle overlay for text readability when cards scroll over */}
+          <div className="absolute inset-0 bg-[#02050A]/70 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,5,10,0.8)_100%)] pointer-events-none" />
+        </div>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="relative w-full pb-32 pt-32 lg:pt-48 z-10">
+        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent via-[#00E5FF]/5 to-transparent pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-24 relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-foreground">
             Classified <span className="text-cyber-cyan text-glow-cyan">Missions</span>
@@ -215,9 +258,11 @@ export function Missions() {
           </div>
         </div>
       </div>
+      </div>
     </section>
   );
 }
+
 
 
 

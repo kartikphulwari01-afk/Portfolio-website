@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
@@ -24,6 +24,22 @@ export function TheVoyage() {
   const lineRef = useRef<SVGPathElement>(null);
   const mobileLineRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<(HTMLDivElement | null)[]>([]);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const targetTimeRef = useRef<number>(0);
+  const rafPendingRef = useRef<boolean>(false);
+
+  const updateVideo = (progress: number) => {
+    if (!videoRef.current || isNaN(videoRef.current.duration) || videoRef.current.duration <= 0) return;
+    targetTimeRef.current = progress * Math.max(0, videoRef.current.duration - 0.05);
+    if (!rafPendingRef.current) {
+      rafPendingRef.current = true;
+      requestAnimationFrame(() => {
+        if (videoRef.current) videoRef.current.currentTime = targetTimeRef.current;
+        rafPendingRef.current = false;
+      });
+    }
+  };
 
   useGSAP(() => {
     if (!trackRef.current || !wrapperRef.current) return;
@@ -48,7 +64,8 @@ export function TheVoyage() {
           start: "top top",
           end: `+=${totalVideoSync + scrollAmount}`, 
           pin: true,
-          scrub: 1,
+          
+          scrub: true,
         }
       });
 
@@ -57,7 +74,8 @@ export function TheVoyage() {
         { opacity: 0, clipPath: "inset(0 50% 0 50%)", scale: 0.95 },
         { opacity: 1, clipPath: "inset(0 0% 0 0%)", scale: 1, duration: syncReveal, ease: "power2.inOut" }
       );
-      tl.to(".voyage-bg", { opacity: 1, duration: syncBgFade }, ">");
+      tl.to({}, { duration: syncBgFade }, ">");
+      tl.to(".voyage-bg", { opacity: 1, duration: 0.01 }, ">");
 
       tl.add("scrollStart");
       tl.to(trackRef.current, { x: -scrollAmount, ease: "none", duration: scrollAmount }, "scrollStart");
@@ -67,6 +85,14 @@ export function TheVoyage() {
         gsap.set(lineRef.current, { strokeDasharray: len, strokeDashoffset: len });
         tl.to(lineRef.current, { strokeDashoffset: 0, ease: "none", duration: scrollAmount }, "scrollStart");
       }
+
+      tl.to({}, {
+        duration: scrollAmount,
+        ease: "none",
+        onUpdate: function() {
+          updateVideo(this.progress());
+        }
+      }, "scrollStart");
 
       const nodeDuration = scrollAmount * 0.3;
       const settleDuration = scrollAmount * 0.2;
@@ -96,7 +122,8 @@ export function TheVoyage() {
           start: "top top",
           end: `+=${totalVideoSync}`,
           pin: true,
-          scrub: 1,
+          
+          scrub: true,
         }
       });
       syncTl.to({}, { duration: syncWait1 });
@@ -104,7 +131,8 @@ export function TheVoyage() {
         { opacity: 0, clipPath: "inset(0 50% 0 50%)", scale: 0.95 },
         { opacity: 1, clipPath: "inset(0 0% 0 0%)", scale: 1, duration: syncReveal, ease: "power2.inOut" }
       );
-      syncTl.to(".voyage-bg", { opacity: 1, duration: syncBgFade }, ">");
+      syncTl.to({}, { duration: syncBgFade }, ">");
+      syncTl.to(".voyage-bg", { opacity: 1, duration: 0.01 }, ">");
 
       // 2. Vertical Line Draw
       if (mobileLineRef.current) {
@@ -117,7 +145,8 @@ export function TheVoyage() {
               trigger: trackRef.current,
               start: "top center",
               end: "bottom center",
-              scrub: 1
+              scrub: true,
+              onUpdate: (self) => updateVideo(self.progress)
             }
           }
         );
@@ -157,7 +186,18 @@ export function TheVoyage() {
 
   return (
     <div id="voyage" ref={wrapperRef} className="relative w-full border-t border-white/5">
-      <div className="voyage-bg absolute inset-0 bg-[#02050A] opacity-0 z-0 pointer-events-none" />
+      <div className="voyage-bg absolute inset-0 bg-[#02050A] opacity-0 z-0 pointer-events-none overflow-hidden">
+        <video
+          ref={videoRef}
+          src="/scene2-scroll-scrub-web.mp4"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          muted
+          playsInline
+          preload="auto"
+        />
+        {/* Subtle localized gradient for UI readability */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(2,5,10,0.5)_0%,transparent_50%)] pointer-events-none" />
+      </div>
       <section className="voyage-reveal relative min-h-screen lg:h-screen w-full flex flex-col justify-start lg:justify-center overflow-hidden z-10 opacity-0 bg-transparent pt-32 lg:pt-0">
         
         <div className="relative lg:absolute top-0 lg:top-24 left-[5vw] lg:left-[10vw] z-20 mb-16 lg:mb-0">
@@ -224,6 +264,16 @@ export function TheVoyage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
