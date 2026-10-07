@@ -207,7 +207,7 @@ export function TheVoyage() {
           <div className="font-mono text-[10px] text-cyber-cyan tracking-[0.3em] mt-2">MY JOURNEY // TECHNICAL TIMELINE 🌊</div>
         </div>
 
-        <div className="w-full overflow-hidden mt-8 lg:mt-[160px] relative z-10 flex-1">
+        <div className="w-full overflow-hidden mt-8 lg:mt-[160px] lg:translate-y-36 relative z-10 flex-1">
           <div ref={trackRef} className="flex flex-col lg:flex-row items-center px-[5vw] lg:px-[10vw] w-full lg:w-max h-full lg:h-[500px] gap-16 lg:gap-0 relative">
             
             {/* MOBILE VERTICAL ROUTE LINE */}
@@ -220,8 +220,21 @@ export function TheVoyage() {
             
             {/* DESKTOP HORIZONTAL ROUTE SVG */}
             <svg className="absolute top-1/2 left-0 w-full h-[200px] -translate-y-1/2 pointer-events-none z-0 hidden lg:block" overflow="visible">
-              <path d={generatePath()} fill="none" stroke="rgba(255, 200, 87, 0.1)" strokeWidth="2" strokeDasharray="5 5" />
-              <path ref={lineRef} d={generatePath()} fill="none" stroke="var(--color-cyber-gold)" strokeWidth="3" className="text-glow-gold drop-shadow-xl" />
+              <defs>
+                <filter id="cinematicGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  {/* Dark contrasting shadows (Backing) */}
+                  <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#000000" floodOpacity="0.9" />
+                  <feDropShadow dx="0" dy="12" stdDeviation="12" floodColor="#000000" floodOpacity="0.7" />
+                  {/* Outer soft gold glow */}
+                  <feDropShadow dx="0" dy="0" stdDeviation="10" floodColor="#FFC857" floodOpacity="0.8" />
+                  {/* Inner bright core glow */}
+                  <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#FFC857" floodOpacity="1" />
+                </filter>
+              </defs>
+              {/* Background dashed path */}
+              <path d={generatePath()} fill="none" stroke="rgba(255, 200, 87, 0.3)" strokeWidth="3" strokeDasharray="6 6" className="drop-shadow-lg" />
+              {/* Animated Main Route */}
+              <path ref={lineRef} d={generatePath()} fill="none" stroke="var(--color-cyber-gold)" strokeWidth="5" filter="url(#cinematicGlow)" />
             </svg>
             
             {MILESTONES.map((stone, idx) => (
@@ -231,7 +244,7 @@ export function TheVoyage() {
                 className={`relative flex flex-col items-center w-full max-w-[400px] lg:w-[500px] shrink-0 z-10 lg:mb-32`}
               >
                 {/* Node Point */}
-                <div className={`w-8 h-8 rounded-full border-2 border-cyber-gold bg-[#02050A] flex items-center justify-center box-glow-gold z-20 mt-4 lg:mt-8 lg:order-2`}>
+                <div className={`w-8 h-8 rounded-full border-2 border-cyber-gold bg-[#02050A] flex items-center justify-center box-glow-gold shadow-[0_4px_12px_rgba(0,0,0,0.8)] z-20 mt-4 lg:mt-8 lg:order-2`}>
                   <div className={`w-2 h-2 rounded-full ${stone.active ? 'bg-cyber-gold animate-pulse' : 'bg-cyber-gold'}`} />
                 </div>
 

@@ -143,19 +143,49 @@ export function Missions() {
     // Animate project cards progressively
     const cards = gsap.utils.toArray('.project-card');
     cards.forEach((card: any, i) => {
-      gsap.fromTo(card, 
-        { y: 100, opacity: 0, scale: 0.95 },
-        { 
-          y: 0, opacity: 1, scale: 1,
-          duration: 0.8, 
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none reverse"
+      // 1. Media Container Animation
+      const media = card.querySelector('.media-placeholder');
+      if (media) {
+        gsap.fromTo(media, 
+          { y: 60, opacity: 0, scale: 0.98 },
+          { 
+            y: 0, opacity: 1, scale: 1,
+            duration: 0.8, 
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none none"
+            }
           }
-        }
-      );
+        );
+      }
+
+      // 2. Staggered Dossier Text Animation
+      const dossierElements = card.querySelectorAll('.dossier-element');
+      if (dossierElements.length > 0) {
+        gsap.fromTo(dossierElements,
+          { y: 18, opacity: 0 },
+          {
+            y: 0, opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      }
+      // 3. Active State Trigger (for enhanced contrast when centered)
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top 65%",
+        end: "bottom 35%",
+        toggleClass: "is-active"
+      });
     });
 
   }, { scope: sectionRef });
@@ -203,15 +233,15 @@ export function Missions() {
             {PROJECTS.map((project, idx) => {
               const isEven = idx % 2 === 0;
               return (
-                <div key={project.id} className={`project-card relative flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center w-full`}>
+                <div key={project.id} className={`project-card group/card relative flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-16 items-center w-full`}>
                   
                   {/* Node Connector (Desktop) */}
-                  <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-cyber-cyan bg-[#02050A] items-center justify-center z-10">
-                    <div className="w-1 h-1 rounded-full bg-cyber-cyan animate-pulse" />
+                  <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-cyber-cyan bg-[#02050A] items-center justify-center z-10 transition-colors duration-500 group-[.is-active]/card:border-[#00E5FF] group-[.is-active]/card:shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+                    <div className="w-1 h-1 rounded-full bg-cyber-cyan animate-pulse group-[.is-active]/card:bg-[#00E5FF]" />
                   </div>
 
                   {/* Media Placeholder */}
-                  <div className={`w-full md:w-1/2 panel-cyber p-2 group overflow-hidden ${isEven ? 'md:text-right' : 'md:text-left'}`}>
+                  <div className={`media-placeholder w-full md:w-1/2 panel-cyber p-2 group overflow-hidden ${isEven ? 'md:text-right' : 'md:text-left'} transition-all duration-700 group-[.is-active]/card:border-white/20`}>
                     <div className="w-full aspect-video bg-[#050812] border border-white/5 relative flex items-center justify-center overflow-hidden">
                       {/* Grid background */}
                       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
@@ -222,10 +252,10 @@ export function Missions() {
                           /* @ts-ignore */
                           src={project.image} 
                           alt={`${project.title} Preview`}
-                          className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-700 z-10" 
+                          className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal group-[.is-active]/card:opacity-100 group-[.is-active]/card:mix-blend-normal transition-all duration-700 z-10" 
                         />
                       ) : (
-                        <div className="flex flex-col items-center opacity-50 group-hover:opacity-100 transition-opacity z-10 relative">
+                        <div className="flex flex-col items-center opacity-50 group-hover:opacity-100 group-[.is-active]/card:opacity-100 transition-opacity z-10 relative">
                           <FolderGit2 className="text-cyber-cyan mb-2" size={32} />
                           <span className="font-mono text-[10px] tracking-widest text-muted">PROJECT PREVIEW</span>
                           <span className="font-mono text-[8px] tracking-widest text-cyber-cyan mt-1">ID: {project.id}</span>
@@ -233,46 +263,46 @@ export function Missions() {
                       )}
                       
                       {/* Scanline */}
-                      <div className="absolute top-0 left-0 w-full h-[2px] bg-cyber-cyan/30 animate-scanline opacity-0 group-hover:opacity-100" />
+                      <div className="absolute top-0 left-0 w-full h-[2px] bg-cyber-cyan/30 animate-scanline opacity-0 group-hover:opacity-100 group-[.is-active]/card:opacity-100" />
                     </div>
                   </div>
 
                   {/* Dossier Content */}
-                  <div className={`w-full md:w-1/2 flex flex-col ${isEven ? 'md:items-start' : 'md:items-end md:text-right'}`}>
-                    <span className="font-mono text-[10px] text-cyber-cyan tracking-widest border border-cyber-cyan/20 px-2 py-1 bg-cyber-cyan/5 mb-4 inline-block">
+                  <div className={`w-full md:w-1/2 flex flex-col ${isEven ? 'md:items-start' : 'md:items-end md:text-right'} p-6 md:p-8 -mx-6 md:mx-0 rounded-2xl ${isEven ? 'bg-gradient-to-r' : 'bg-gradient-to-l'} from-[#02050A]/60 via-[#02050A]/20 to-transparent relative z-10 transition-colors duration-700`}>
+                    <span className="dossier-element font-mono text-[10px] text-[#00E5FF] tracking-widest border border-cyber-cyan/20 px-2 py-1 bg-[#00E5FF]/5 mb-4 inline-block drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] transition-colors duration-500 group-[.is-active]/card:bg-[#00E5FF]/15 group-[.is-active]/card:border-[#00E5FF]/40">
                       {project.category}
                     </span>
                     
-                    <h3 className="text-2xl md:text-3xl font-bold uppercase mb-4 text-foreground hover:text-cyber-cyan transition-colors">
+                    <h3 className="dossier-element text-2xl md:text-3xl font-bold uppercase mb-4 text-[#F5F7FA] hover:text-[#00E5FF] transition-colors duration-500 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] group-[.is-active]/card:text-white group-[.is-active]/card:drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
                       {project.title}
                     </h3>
                     
-                    <p className="text-sm text-muted leading-relaxed mb-6 max-w-md">
+                    <p className="dossier-element text-sm text-[#EAF0F7] leading-relaxed mb-6 max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] font-medium transition-colors duration-500 group-[.is-active]/card:text-white">
                       {project.desc}
                     </p>
                     
-                    <div className={`flex flex-wrap gap-2 mb-8 ${isEven ? 'justify-start' : 'md:justify-end'}`}>
+                    <div className={`dossier-element flex flex-wrap gap-2 mb-8 ${isEven ? 'justify-start' : 'md:justify-end'}`}>
                       {project.stack.map(tech => (
-                        <span key={tech} className="text-[10px] font-mono text-muted bg-white/5 px-2 py-1 rounded-sm">
+                        <span key={tech} className="text-[10px] font-mono text-[#EAF0F7] bg-[#02050A]/40 border border-white/10 px-2 py-1 rounded-sm drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] backdrop-blur-sm transition-colors duration-500 group-[.is-active]/card:bg-[#02050A]/70 group-[.is-active]/card:border-white/20">
                           {tech}
                         </span>
                       ))}
                     </div>
 
-                    <div className="flex gap-4 items-center">
+                    <div className="dossier-element flex gap-4 items-center">
                       {project.repo && (
-                        <a href={project.repo} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-colors group">
-                          <Code2 size={14} className="group-hover:text-cyber-cyan transition-colors" /> SOURCE
+                        <a href={project.repo} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                          <Code2 size={14} className="group-hover:text-[#00E5FF] transition-colors" /> SOURCE
                         </a>
                       )}
                       {project.live && (
-                        <a href={project.live} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-colors group">
-                          <ExternalLink size={14} className="group-hover:text-cyber-cyan transition-colors" /> LIVE DEMO
+                        <a href={project.live} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                          <ExternalLink size={14} className="group-hover:text-[#00E5FF] transition-colors" /> LIVE DEMO
                         </a>
                       )}
                       {/* @ts-ignore */}
                       {project.status && !project.live && (
-                        <span className="flex items-center gap-2 text-xs font-mono text-muted/50 cursor-not-allowed">
+                        <span className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7]/60 cursor-not-allowed drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
                           <ExternalLink size={14} className="opacity-50" /> {project.status}
                         </span>
                       )}
