@@ -70,7 +70,7 @@ export function Missions() {
   const sectionRef = useRef<HTMLElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   
-  const cinematicRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const targetTimeRef = useRef<number>(0);
   const rafPendingRef = useRef<boolean>(false);
@@ -88,6 +88,32 @@ export function Missions() {
   };
 
   useGSAP(() => {
+    if (bgRef.current) {
+      // 1. Fade in over the last 100vh of Voyage
+      gsap.to(bgRef.current, {
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=100%", 
+          scrub: true,
+        }
+      });
+
+      // 2. Slide out natively when the section ends
+      gsap.to(bgRef.current, {
+        yPercent: -100,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "bottom bottom",
+          end: "+=100%",
+          scrub: true,
+        }
+      });
+    }
+
     if (sectionRef.current) {
       gsap.timeline({
         scrollTrigger: {
@@ -135,26 +161,27 @@ export function Missions() {
   }, { scope: sectionRef });
 
   return (
-    <section id="missions" ref={sectionRef} className="relative w-full border-t border-white/5 bg-[#02050A]">
+    <section id="missions" ref={sectionRef} className="relative w-full border-t border-white/5 -mt-[100vh] z-20">
       
-      {/* Sticky Cinematic Background for Scene 3 */}
+      {/* FIXED Cinematic Background for Scene 3 (Fades in over Voyage) */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-        <div className="sticky top-0 w-full h-screen overflow-hidden">
+        <div ref={bgRef} className="fixed top-0 left-0 w-full h-screen overflow-hidden opacity-0 z-0">
           <video 
             ref={videoRef} 
             src="/scene3-scroll-scrub-web.mp4" 
             className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
             muted playsInline preload="auto" 
           />
-          {/* Subtle overlay for text readability when cards scroll over */}
-          <div className="absolute inset-0 bg-[#02050A]/70 pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,5,10,0.8)_100%)] pointer-events-none" />
+          {/* Extremely subtle overlay to retain cinematic colors but keep text readable */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#02050A]/10 to-[#02050A]/60 pointer-events-none" />
         </div>
       </div>
 
-      <div className="relative w-full pb-32 pt-32 lg:pt-48 z-10">
-        <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent via-[#00E5FF]/5 to-transparent pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="relative w-full pb-32 pt-[100vh] z-10 pointer-events-auto">
+        {/* Added extra padding-top inside the wrapper to push the actual content down below the 100vh overlap */}
+        <div className="pt-32 lg:pt-48 relative">
+          <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent via-[#00E5FF]/5 to-transparent pointer-events-none" />
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-24 relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-foreground">
             Classified <span className="text-cyber-cyan text-glow-cyan">Missions</span>
@@ -257,6 +284,7 @@ export function Missions() {
             })}
           </div>
         </div>
+      </div>
       </div>
       </div>
     </section>
