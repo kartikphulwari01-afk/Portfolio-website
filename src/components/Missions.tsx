@@ -38,8 +38,7 @@ const PROJECTS = [
     desc: "Smart ordering, inventory management, and POS system designed for local cafes.", 
     stack: ["React", "Node.js", "MongoDB"],
     repo: "https://github.com/kartikphulwari01-afk/cafeteria-app",
-    live: null,
-    status: "STAY TUNED",
+    live: "https://cafeteria-app-two.vercel.app",
     image: "/cafebuddy-card.png"
   },
   { 
@@ -291,12 +290,22 @@ export function Missions() {
 
                     <div className="dossier-element flex gap-4 items-center">
                       {project.repo && (
-                        <a href={project.repo} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                        <a 
+                          href={project.repo} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] focus-visible:text-[#00E5FF] focus-visible:outline-none transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
+                        >
                           <Code2 size={14} className="group-hover:text-[#00E5FF] transition-colors" /> SOURCE
                         </a>
                       )}
                       {project.live && (
-                        <a href={project.live} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                        <a 
+                          href={project.live} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center gap-2 text-xs font-mono text-[#EAF0F7] hover:text-[#00E5FF] focus-visible:text-[#00E5FF] focus-visible:outline-none transition-colors group drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
+                        >
                           <ExternalLink size={14} className="group-hover:text-[#00E5FF] transition-colors" /> LIVE DEMO
                         </a>
                       )}
