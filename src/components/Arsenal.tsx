@@ -237,6 +237,7 @@ export function Arsenal() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
       setActiveCatId(newCatId);
+      setIsTransitioning(false);
       return;
     }
 
@@ -269,14 +270,13 @@ export function Arsenal() {
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
-      setIsTransitioning(false);
       return;
     }
 
     const cards = cardsContainerRef.current?.querySelectorAll(".arsenal-card");
     if (!cards || cards.length === 0) {
-      setIsTransitioning(false);
-      return;
+      const timer = setTimeout(() => setIsTransitioning(false), 0);
+      return () => clearTimeout(timer);
     }
 
     // Quick polished entrance for newly mounted cards

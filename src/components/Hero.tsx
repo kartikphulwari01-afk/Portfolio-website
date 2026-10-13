@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
@@ -89,9 +89,159 @@ export function Hero() {
             Entering the New World
           </div>
           
-          <h1 className="hero-element text-[12vw] sm:text-6xl md:text-8xl lg:text-[12vw] font-bold uppercase tracking-tighter leading-[0.85] text-foreground mb-8 text-glow-cyan drop-shadow-2xl">
-            Kartik<br />Phulwari
-          </h1>
+          {/* Title Composition with Dark Haki Lightning Strike */}
+          <div className="hero-element relative inline-block mb-8">
+            <style>{`
+              @keyframes hakiStrike {
+                0%, 29.6% {
+                  opacity: 0;
+                  transform: scale(0.97) translateY(-2px);
+                }
+                30.0% {
+                  opacity: 0.8;
+                  transform: scale(0.99) translateY(0);
+                }
+                30.3% {
+                  opacity: 0.15;
+                }
+                30.6% {
+                  opacity: 1;
+                  transform: scale(1.01) translateY(0);
+                }
+                31.4% {
+                  opacity: 0.85;
+                  transform: scale(1);
+                }
+                32.2% {
+                  opacity: 0.35;
+                }
+                33.0%, 70.4% {
+                  opacity: 0;
+                  transform: scale(0.97);
+                }
+                71.0% {
+                  opacity: 0.9;
+                  transform: scale(1.01) translateY(0);
+                }
+                71.4% {
+                  opacity: 0.2;
+                }
+                71.8% {
+                  opacity: 1;
+                  transform: scale(1.02);
+                }
+                72.3% {
+                  opacity: 0.3;
+                }
+                72.7% {
+                  opacity: 0.85;
+                }
+                73.5% {
+                  opacity: 0.25;
+                }
+                74.5%, 100% {
+                  opacity: 0;
+                  transform: scale(0.97);
+                }
+              }
+
+              @keyframes hakiTextImpact {
+                0%, 29.8% {
+                  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+                }
+                30.6% {
+                  text-shadow: 0 0 25px rgba(0, 229, 255, 0.95), 0 0 45px rgba(255, 255, 255, 0.85), 0 0 8px rgba(57, 255, 20, 0.45);
+                }
+                31.5% {
+                  text-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.7);
+                }
+                33.0%, 71.0% {
+                  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+                }
+                71.8% {
+                  text-shadow: 0 0 25px rgba(0, 229, 255, 0.95), 0 0 45px rgba(255, 255, 255, 0.85), 0 0 8px rgba(57, 255, 20, 0.45);
+                }
+                72.7% {
+                  text-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.7);
+                }
+                74.5%, 100% {
+                  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+                }
+              }
+
+              .haki-lightning-svg {
+                animation: hakiStrike 14s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+                will-change: opacity, transform;
+                transform-origin: center;
+              }
+
+              .haki-title {
+                animation: hakiTextImpact 14s ease-out infinite;
+                will-change: text-shadow;
+              }
+
+              @media (prefers-reduced-motion: reduce) {
+                .haki-lightning-svg,
+                .haki-title {
+                  animation: none !important;
+                }
+                .haki-lightning-svg {
+                  opacity: 0 !important;
+                }
+                .haki-title {
+                  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6) !important;
+                }
+              }
+            `}</style>
+
+            {/* Dark Haki Lightning Bolt Layer (Behind text) */}
+            <div className="absolute -inset-4 sm:-inset-6 md:-inset-10 pointer-events-none z-0 overflow-visible" aria-hidden="true">
+              <svg 
+                className="haki-lightning-svg w-full h-full"
+                viewBox="0 0 600 320"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                {/* Outer Neon-Green Edge / Aura */}
+                <path
+                  d="M 440 10 L 405 55 L 425 68 L 360 130 L 385 142 L 290 205 L 315 218 L 220 280 L 235 292 L 170 310"
+                  stroke="#39FF14"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                  style={{ filter: "drop-shadow(0 0 4px #39FF14)" }}
+                />
+                <path
+                  d="M 360 130 L 300 150 L 320 160 L 250 195"
+                  stroke="#39FF14"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                  style={{ filter: "drop-shadow(0 0 4px #39FF14)" }}
+                />
+
+                {/* Inner Pitch-Black Core */}
+                <path
+                  d="M 440 10 L 405 55 L 425 68 L 360 130 L 385 142 L 290 205 L 315 218 L 220 280 L 235 292 L 170 310"
+                  stroke="#020408"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                />
+                <path
+                  d="M 360 130 L 300 150 L 320 160 L 250 195"
+                  stroke="#020408"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                />
+              </svg>
+            </div>
+
+            <h1 className="haki-title relative z-10 text-[12vw] sm:text-6xl md:text-8xl lg:text-[12vw] font-bold uppercase tracking-tighter leading-[0.85] text-foreground text-glow-cyan drop-shadow-2xl">
+              Kartik<br />Phulwari
+            </h1>
+          </div>
           
           <div className="hero-element font-mono text-xs md:text-sm text-cyber-cyan uppercase tracking-widest leading-relaxed max-w-lg bg-[#02050A]/80 backdrop-blur-md border border-white/10 p-3 px-6 shadow-2xl box-glow-cyan">
             ? Cybersecurity <span className="text-foreground px-2">//</span> Fullstack Engineering
