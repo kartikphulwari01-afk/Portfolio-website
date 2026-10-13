@@ -185,7 +185,7 @@ export function TheVoyage() {
   };
 
   return (
-    <div id="voyage" ref={wrapperRef} className="relative w-full border-t border-white/5">
+    <div id="voyage" ref={wrapperRef} className="relative w-full">
       <div className="voyage-bg absolute inset-0 bg-[#02050A] opacity-0 z-0 pointer-events-none overflow-hidden">
         <video
           ref={videoRef}
